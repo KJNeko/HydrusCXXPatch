@@ -1,0 +1,13 @@
+
+#ignore my environment
+workspace.code-workspace
+
+#ignore build files
+build
+CMakeFiles
+cmake_install.cmake
+Makefile
+CMakeCache.txt
+
+#ignore lib folder
+hydrusCXXPatch/lib/**
