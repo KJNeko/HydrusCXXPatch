@@ -156,7 +156,7 @@ SpecificFileType fileTypeFromHeader( const std::array<char, 64>& fileData )
             {
                 //Search for acTL block
 
-                uint8_t IHDRoffset = 12;
+                int32_t IHDRoffset = 12;
                 std::vector<char> sig = {'I','H','D','R'};
 
                 if(std::equal(
