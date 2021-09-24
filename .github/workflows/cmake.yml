@@ -31,7 +31,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: compress
-      run: tar -czvf Ubuntu-Patch.tar.gz -c ${{github.workspace}}/patch "patch"
+      run: tar -czvf Ubuntu-Patch.tar.gz -c ${{github.workspace}}/build/patch "patch"
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
@@ -49,7 +49,7 @@ jobs:
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G "MinGW Makefiles"
+      run: cmake -B ${{github.workspace}}\build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G "MinGW Makefiles"
 
     - name: Build
       # Build your program with the given configuration
@@ -58,7 +58,7 @@ jobs:
     - name: Compress
       run: |
         cd .\build
-        7z.exe a -tzip -mx=5 ${{github.workspace}}\Windows-Patch.zip ${{github.workspace}}\patch
+        7z.exe a -tzip -mx=5 ${{github.workspace}}\Windows-Patch.zip ${{github.workspace}}\build\patch
         cd ..
 
     - name: Upload A Build Artifact
