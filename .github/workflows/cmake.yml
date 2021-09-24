@@ -57,9 +57,9 @@ jobs:
 
     - name: Compress
       run: |
-      cd .\build
-      7z.exe a -tzip -mx=5 ..\Windows-Patch 'Hydrus Network Patch'
-      cd ..
+        cd .\build
+        7z.exe a -tzip -mx=5 ..\Windows-Patch.zip 'Hydrus Network Patch'
+        cd ..
 
     - name: Upload A Build Artifact
       uses: actions/upload-artifact@v2
@@ -79,7 +79,7 @@ jobs:
         uses: actions/download-artifact@v2
 
       - name: Rename Files
-        run: | 
+        run: |
           mkdir ubuntu windows
           mv Windows-Patch/Windows-Patch.zip Hydrus.Patch.${{steps.meta.outputs.version_short}}.-.Windows.-.Patch.zip
           mv Ubuntu-Patch/Ubuntu-Patch.tar.gz Hydrus.Patch.${{steps.meta.outputs.version_short}}.-.Linux.-.Patch.tar.gz
