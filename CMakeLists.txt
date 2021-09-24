@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(hydrusPatch VERSION 0.1.0)
+project(HydrusPatch VERSION 0.1.0)
 
 
 if(WIN32)
-    project(hydrusPatch LANGUAGES CXX)
+    project(HydrusPatch LANGUAGES CXX)
 elseif(UNIX)
-    project(hydrusPatch)
+    project(HydrusPatch)
 endif()
 
 set(CMAKE_CONFIGURATION_TYEPS "Release;Dev" CACHE STRING "" FORCE)
@@ -26,17 +26,15 @@ set(CMAKE_MAKE_PROGRAM make)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(EXPORT_DIR "${CMAKE_SOURCE_DIR}/hydrusCXXPatch/libs")
-
 #inclusion of project files#
 set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/hydrusCXXPatch/src")
 set(FGL_DIR "${CMAKE_SOURCE_DIR}/fglheaders")
 
 #Set export dirs
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/hydrusCXXPatch/lib")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/hydrusCXXPatch/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/hydrusCXXPatch/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/hydrusCXXPatch/lib/")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/hydrusCXXPatch/lib/")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/hydrusCXXPatch/lib/")
 
 include_directories(${FORMS_DIR})
 include_directories(${INCLUDE_DIR})
@@ -53,23 +51,12 @@ file(GLOB_RECURSE SOURCES
 ##SETUP DLL##
 include(GenerateExportHeader)
 if(WIN32)
-    add_library(hydrusPatch SHARED ${SOURCES})
+    add_library(HydrusPatch SHARED ${SOURCES})
 elseif(UNIX)
-    add_library(hydrusPatch SHARED ${SOURCES})
+    add_library(HydrusPatch SHARED ${SOURCES})
 endif()
 
-target_include_directories(hydrusPatch PRIVATE ${FORMS_DIR})
-target_include_directories(hydrusPatch PRIVATE ${INCLUDE_DIR})
-target_include_directories(hydrusPatch PRIVATE ${SOURCE_DIR})
-target_include_directories(hydrusPatch PRIVATE ${FLG_DIR})
-
-
-
-#include(CTest)
-#enable_testing()
-#
-#add_library(hydrusPatch hydrusPatch.cpp)
-#
-#set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-#set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-#include(CPack)
+target_include_directories(HydrusPatch PRIVATE ${FORMS_DIR})
+target_include_directories(HydrusPatch PRIVATE ${INCLUDE_DIR})
+target_include_directories(HydrusPatch PRIVATE ${SOURCE_DIR})
+target_include_directories(HydrusPatch PRIVATE ${FLG_DIR})
