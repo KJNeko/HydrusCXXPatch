@@ -1,4 +1,4 @@
-# HydrusCXXPatch
+# HydrusCXXPatch [![Release](https://github.com/KJNeko/HydrusCXXPatch/actions/workflows/cmake.yml/badge.svg)](https://github.com/KJNeko/HydrusCXXPatch/actions/workflows/cmake.yml)
 A Patch for Hydrus to accelerate the program using CBindings in python.
 
 ***Currently will only work with the raw hydrus source. Fix for that sometime soon***
