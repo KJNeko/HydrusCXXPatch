@@ -131,25 +131,14 @@ std::array<
 	}
 };
 
-/*
-	for (const auto& pair : FileTypeSignatures)
-	{
-		const auto& [offset, signature]{ pair };
-		cout << std::to_string(offset) << " : ";
-		for (const char c : signature)
-			cout << static_cast<uint64_t>(c) << ' ';
-		cout << '\n';
-	};
-*/
-
-SpecificFileType fileTypeFromHeader( const std::array<char, 64>& fileData )
+SpecificFileType fileTypeFromHeader( const std::array<char, 128>& fileData )
 {
 	std::size_t currentIndex { 0 };
     for (const auto& pair : FileTypeSignatures)
     {
         const auto& [offset, signature]{ pair };
         if (std::equal(
-            fileData.cbegin() + offset, fileData.cbegin() + signature.size(),
+            fileData.cbegin() + offset, fileData.cbegin() + offset + signature.size(),
             signature.cbegin(), signature.cend()))
         {
             if(currentIndex == IMAGE_PNG)
@@ -174,7 +163,7 @@ SpecificFileType fileTypeFromHeader( const std::array<char, 64>& fileData )
 
                     std::memcpy(&size, flipped.cbegin(), sizeof(int32_t));
 
-                    IHDRoffset += size + 8 + 4; //+4 for offset (We ignore the size since we don't need it, +8 to get past the checksum and IHDR header itself)
+                    IHDRoffset += size + 8 + 4; //+4 for offset to skip size of next header, +8 to get past the checksum and IHDR header itself
 
                     sig = {'a','c','T','L'};
 
@@ -200,7 +189,7 @@ SpecificFileType fileTypeFromHeader( const std::array<char, 64>& fileData )
 
 int parseType( std::string filename )
 {
-	std::array<char, 64> imgdata { 0 };
+	std::array<char, 128> imgdata { 0 };
 
 	if(std::ifstream ifs( filename, std::ios::binary ); ifs)
 	{
