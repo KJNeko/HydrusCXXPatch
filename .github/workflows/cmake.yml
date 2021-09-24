@@ -58,14 +58,14 @@ jobs:
     - name: Compress
       run: |
         cd .\build
-        7z.exe a -tzip -mx=5 ..\Windows-Patch.zip ${{github.workspace}}/build
+        7z.exe a -tzip -mx=5 ${{github.workspace}}/Windows-Patch.zip ${{github.workspace}}/build
         cd ..
 
     - name: Upload A Build Artifact
       uses: actions/upload-artifact@v2
       with:
         name: Windows-Patch
-        path: dist\Windows-Patch.zip
+        path: ${{github.workspace}}\Windows-Patch.zip
 
   create-release:
     name: Create release Entry
