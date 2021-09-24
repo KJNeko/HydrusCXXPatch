@@ -31,7 +31,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: compress
-      run: tar -czvf Ubuntu-Patch.tar.gz -c ${{github.workspace}}/build/patch "patch"
+      run: tar -czvf Ubuntu-Patch.tar.gz -c ${{github.workspace}}/build/patch
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
