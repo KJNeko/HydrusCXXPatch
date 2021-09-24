@@ -28,4 +28,4 @@ The patch will be expected to work on any system and follow my specification for
   3. Make
   4. Python
  
- Run cmake from the root directory and move the contents of build into the hydrus root directory next to client.py
+ Run cmake from the root directory and move the contents of *patch* into the hydrus root directory next to client.py

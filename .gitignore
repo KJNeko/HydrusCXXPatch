@@ -11,3 +11,4 @@ CMakeCache.txt
 
 #ignore lib folder
 hydrusCXXPatch/lib/**
+patch
