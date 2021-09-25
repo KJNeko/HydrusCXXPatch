@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch: []
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -80,9 +81,14 @@ jobs:
     - name: Get All Artifacts
       uses: actions/download-artifact@v2
 
+    - name: Extract version metadata
+      id: meta
+      run: |
+        echo "::set-output name=version::${GITHUB_REF##*/}"
+        echo "::set-output name=version_short::${GITHUB_REF##*/v}"
+
     - name: Rename Files
       run: |
-        mkdir ubuntu windows
         mv Windows-Patch/Windows-Patch.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Patch.zip
         mv Ubuntu-Patch/Ubuntu-Patch.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Patch.tar.gz
 
