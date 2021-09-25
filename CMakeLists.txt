@@ -33,6 +33,7 @@ set(FGL_DIR "${CMAKE_SOURCE_DIR}/fglheaders")
 
 #Set export dirs
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/patch/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/patch/lib")
 file(COPY "${CMAKE_SOURCE_DIR}/hydrusCXXPatch/PatchedClient.py" DESTINATION "${CMAKE_SOURCE_DIR}/patch")
 
 include_directories(${FORMS_DIR})
