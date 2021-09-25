@@ -57,7 +57,9 @@ jobs:
 
     - name: Compress
       run: |
+        ls
         cd .\build
+        ls
         7z.exe a -tzip -mx=5 ${{github.workspace}}\Windows-Patch.zip ${{github.workspace}}\build\patch
         cd ..
 
