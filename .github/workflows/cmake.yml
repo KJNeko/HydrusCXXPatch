@@ -1,6 +1,9 @@
 name: Release
 
-on: push
+on:
+  push:
+    tags:
+      - 'v*'
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -54,9 +57,7 @@ jobs:
 
     - name: Compress
       run: |
-        ls
         cd .\build
-        ls
         7z.exe a -tzip -mx=5 ${{github.workspace}}\Windows-Patch.zip ${{github.workspace}}\patch
         cd ..
 
