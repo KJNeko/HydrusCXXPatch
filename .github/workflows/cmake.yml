@@ -55,7 +55,9 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
+      run: |
+        cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
+        mv ${{github.workspace}}\build\patch\* ${{github.workspace}}\patch
 
     - name: Compress
       run: |
@@ -82,16 +84,16 @@ jobs:
     - name: Rename Files
       run: |
         mkdir ubuntu windows
-        mv Windows-Patch/Windows-Patch.zip Hydrus.Patch.${{steps.meta.outputs.version_short}}.-.Windows.-.Patch.zip
-        mv Ubuntu-Patch/Ubuntu-Patch.tar.gz Hydrus.Patch.${{steps.meta.outputs.version_short}}.-.Linux.-.Patch.tar.gz
+        mv Windows-Patch/Windows-Patch.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Patch.zip
+        mv Ubuntu-Patch/Ubuntu-Patch.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Patch.tar.gz
 
     - name: Release new
       uses: softprops/action-gh-release@v0.1.13
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          Hydrus.Patch.${{steps.meta.outputs.version_short}}.-.Windows.-.Patch.zip
-          Hydrus.Patch.${{steps.meta.outputs.version_short}}.-.Linux.-.Patch.tar.gz
+          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Patch.zip
+          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Patch.tar.gz
 
     env:
       GITHUB_TOKEN: ${{secrets.GETHUB_TOKEN}}
