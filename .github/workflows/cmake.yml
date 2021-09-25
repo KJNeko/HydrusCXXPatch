@@ -69,10 +69,191 @@ jobs:
         name: Windows-Patch
         path: ${{github.workspace}}\Windows-Patch.zip
 
+  hydrus-build-ubuntu:
+    runs-on: ubuntu-18.04
+    needs: [build-ubuntu]
+    steps:
+    -
+      name: Checkout
+      uses: actions/checkout@v2
+      with:
+        path: hydrus
+    - 
+      name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        architecture: x64
+    #- name: Cache Qt
+    #  id: cache-qt
+    #  uses: actions/cache@v1
+    #  with:
+    #    path: Qt
+    #    key: ${{ runner.os }}-QtCache
+    #- 
+    #  name: Install Qt
+    #  uses: jurplel/install-qt-action@v2
+    #  with:
+    #    install-deps: true
+    #    setup-python: 'false'
+    #    modules: qtcharts qtwidgets qtgui qtcore
+    #    cached: ${{ steps.cache-qt.outputs.cache-hit }}
+    - 
+      name: APT Install
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libmpv1
+    - 
+      name: Pip Installer
+      uses: BSFishy/pip-action@v1
+      with:
+        packages: pyinstaller
+        requirements: hydrus/static/build_files/linux/requirements.txt
+
+    - name: Get Patch Artifacts
+      uses: actions/download-artifact@v2
+
+    - name: Patch Files
+      run: |
+        tar -xf Ubuntu-Patch.tar.gz ./patch
+        ls patch
+    - 
+      name: Build Hydrus
+      run: |
+        cp hydrus/static/build_files/linux/client.spec client.spec
+        cp hydrus/static/build_files/linux/server.spec server.spec
+        pyinstaller server.spec
+        pyinstaller client.spec
+    - 
+      name: Remove Chonk
+      run: |
+          find dist/client/ -type f -name "*.pyc" -delete
+          while read line; do find dist/client/ -type f -name "${line}" -delete ; done < hydrus/static/build_files/linux/files_to_delete.txt
+    -
+      name: Set Permissions
+      run: |
+          sudo chown --recursive 1000:1000 dist/client
+          sudo find dist/client -type d -exec chmod 0755 {} \;
+          sudo chmod +x dist/client/client dist/client/server dist/client/bin/swfrender_linux
+    -
+      name: Compress Client
+      run: |
+          mv dist/client "dist/Hydrus Network"
+          tar -czvf Ubuntu-Extract.tar.gz -C dist "Hydrus Network"
+    - 
+      name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Ubuntu-Extract
+        path: Ubuntu-Extract.tar.gz
+        if-no-files-found: error
+        retention-days: 2
+
+  hydrus-build-windows:
+    runs-on: [windows-latest]
+    needs: [build-windows]
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: hydrus
+      - 
+        name: Setup FFMPEG
+        uses: FedericoCarboni/setup-ffmpeg@v1
+        id: setup_ffmpeg
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - 
+        name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+          architecture: x64
+      - 
+        name: Cache Qt
+        id: cache_qt
+        uses: actions/cache@v1
+        with:
+          path: ../Qt
+          key: ${{ runner.os }}-QtCache
+      - 
+        name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          install-deps: true
+          setup-python: 'false'
+          modules: qtcharts qtwidgets qtgui qtcore
+          cached: ${{ steps.cache_qt.outputs.cache-hit }}
+      - 
+        name: PIP Install Packages
+        uses: BSFishy/pip-action@v1
+        with:
+          packages: pyinstaller
+          requirements: hydrus\static\build_files\windows\requirements.txt
+      - 
+        name: Download mpv-dev
+        uses: carlosperate/download-file-action@v1.0.3
+        id: download_mpv
+        with:
+            file-url: 'https://sourceforge.net/projects/mpv-player-windows/files/libmpv/mpv-dev-x86_64-20210228-git-d1be8bb.7z'
+            file-name: 'mpv-dev-x86_64.7z'
+            location: '.'
+      - 
+        name: Process mpv-dev
+        run: |
+          7z x ${{ steps.download_mpv.outputs.file-path }}
+          move mpv-1.dll hydrus\
+      
+      - name: Get Patch Artifacts
+        uses: actions/download-artifact@v2
+
+      - name: Patch Files
+        run: |
+          7z e Windows-Patch/Windows-Patch.zip ./patch
+          ls patch      
+          
+      - name: Build Hydrus
+        run: |
+          move ${{ steps.setup_ffmpeg.outputs.ffmpeg-path }} hydrus\bin\
+          move hydrus\static\build_files\windows\sqlite3.dll hydrus\
+          move hydrus\static\build_files\windows\client-win.spec client-win.spec
+          move hydrus\static\build_files\windows\server-win.spec server-win.spec
+          pyinstaller server-win.spec
+          pyinstaller client-win.spec
+          dir -r
+      - 
+        name: InnoSetup
+        run: |
+          move hydrus\static\build_files\windows\InnoSetup.iss InnoSetup.iss
+          ISCC.exe InnoSetup.iss
+      -
+        name: Compress Client
+        run: |
+          cd .\dist
+          7z.exe a -tzip -mm=Deflate -mx=5 ..\Hydrus-Windows.zip 'Hydrus Network'
+          cd ..
+      - 
+        name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Windows-Install
+          path: dist\HydrusInstaller.exe
+          if-no-files-found: error
+          retention-days: 2
+      - 
+        name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Hydrus-Windows
+          path: Hydrus-Windows.zip
+          if-no-files-found: error
+          retention-days: 2  
+
   create-release:
     name: Create release Entry
     runs-on: ubuntu-latest
-    needs: [build-windows, build-ubuntu]
+    needs: [build-windows, build-ubuntu, hydrus-build-windows, hydrus-build-ubuntu]
     
     steps:
     - name: Checkout Code
@@ -89,16 +270,24 @@ jobs:
 
     - name: Rename Files
       run: |
-        mv Windows-Patch/Windows-Patch.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Patch.zip
-        mv Ubuntu-Patch/Ubuntu-Patch.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Patch.tar.gz
+        mv Windows-Patch/Windows-Patch.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Source.-.Patch.zip
+        mv Windows-Patch/Hydrus-Windows.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Extract.zip
+        mv Windows-Install/HydrusInstaller.exe Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Installer.exe
+        mv Ubuntu-Patch/Ubuntu-Patch.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Source.-.Patch.tar.gz
+        mv Ubuntu-Patch/Hydrus-Ubuntu.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Executable.tar.gz
+        
 
     - name: Release new
       uses: softprops/action-gh-release@v0.1.13
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Patch.zip
-          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Patch.tar.gz
+          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Source.-.Patch.zip
+          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Executable.zip
+          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Installer.exe
+          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Source.-.Patch.tar.gz
+          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Executable.tar.gz
+
 
     env:
       GITHUB_TOKEN: ${{secrets.GETHUB_TOKEN}}
