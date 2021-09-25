@@ -28,7 +28,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: compress
-      run: tar -czvf Ubuntu-Patch.tar.gz -c ${{github.workspace}}/build/patch
+      run: tar -czvf Ubuntu-Patch.tar.gz -c ${{github.workspace}}/patch
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
@@ -57,7 +57,7 @@ jobs:
         ls
         cd .\build
         ls
-        7z.exe a -tzip -mx=5 ${{github.workspace}}\Windows-Patch.zip ${{github.workspace}}\build\patch
+        7z.exe a -tzip -mx=5 ${{github.workspace}}\Windows-Patch.zip ${{github.workspace}}\patch
         cd ..
 
     - name: Upload A Build Artifact
