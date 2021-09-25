@@ -64,3 +64,14 @@ target_include_directories(HydrusPatch PRIVATE ${FORMS_DIR})
 target_include_directories(HydrusPatch PRIVATE ${INCLUDE_DIR})
 target_include_directories(HydrusPatch PRIVATE ${SOURCE_DIR})
 target_include_directories(HydrusPatch PRIVATE ${FLG_DIR})
+
+
+#Check if we are building next to hydrus
+if(EXISTS "hydrus")
+    message("Detected what looks to be hydrus source. Adding patch files")
+    file(COPY "${CMAKE_SOURCE_DIR}/patch/" DESTINATION "${CMAKE_SOURCE_DIR}/hydrus")
+    file(REMOVE "${CMAKE_SOURCE_DIR}/hydrus/client.py")
+    file(RENAME "${CMAKE_SOURCE_DIR}/patch/PatchedClient.py" "${CMAKE_SOURCE_DIR}/hydrus/client.py")
+    file(REMOVE "${CMAKE_SOURCE_DIR}/hydrus/PatchedClient.py")
+    message("You can now build hydrus and the patches will be applied.")
+endif()
