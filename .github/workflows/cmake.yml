@@ -59,7 +59,7 @@ jobs:
 
     - name: Compress
       run: |
-        7z.exe .\patch -tzip -mx=5 Windows-Patch.zip
+        7z.exe a -tzip -mx=5 Windows-Patch.zip patch
 
     - name: Upload A Build Artifact
       uses: actions/upload-artifact@v2
