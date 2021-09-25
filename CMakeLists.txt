@@ -13,7 +13,7 @@ set(CMAKE_CONFIGURATION_TYEPS "Release;Dev" CACHE STRING "" FORCE)
 # -fsanitize=address 
 # -fmodules-ts
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -Werror=cpp -Wall -Wextra -pthread -pedantic -fmax-errors=3 -Wundef -Wnull-dereference -Wduplicated-cond -Wduplicated-branches -Wshadow -Wswitch -Wswitch-enum -Wstrict-overflow=5 -Wconversion -Wfloat-equal -Wdouble-promotion -Wwrite-strings -Wpointer-arith -Wcast-qual -Wformat=2 -Wformat-signedness -Wformat-y2k -Wformat-overflow=2 -Wold-style-cast -Wnon-virtual-dtor -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wsized-deallocation -Wextra-semi -Wmultiple-inheritance -Wzero-as-null-pointer-constant -Werror") #-fuse-linker-plugin -flto -fno-fat-lto-objects")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -static -shared -Werror=cpp -Wall -Wextra -pthread -pedantic -fmax-errors=3 -Wundef -Wnull-dereference -Wduplicated-cond -Wduplicated-branches -Wshadow -Wswitch -Wswitch-enum -Wstrict-overflow=5 -Wconversion -Wfloat-equal -Wdouble-promotion -Wwrite-strings -Wpointer-arith -Wcast-qual -Wformat=2 -Wformat-signedness -Wformat-y2k -Wformat-overflow=2 -Wold-style-cast -Wnon-virtual-dtor -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wsized-deallocation -Wextra-semi -Wmultiple-inheritance -Wzero-as-null-pointer-constant -Werror") #-fuse-linker-plugin -flto -fno-fat-lto-objects")
 #-fanalyzer 
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -Og")
