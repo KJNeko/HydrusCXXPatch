@@ -76,8 +76,10 @@ jobs:
     -
       name: Checkout
       uses: actions/checkout@v2
-      with:
-        path: hydrus
+    
+    - name: Submodule init
+      uses: snickerbockers/submodules-init@v4
+
     - 
       name: Setup Python
       uses: actions/setup-python@v2
@@ -156,8 +158,10 @@ jobs:
       - 
         name: Checkout
         uses: actions/checkout@v2
-        with:
-          path: hydrus
+
+      - name: submodule init
+        uses: snickerbockers/submodules-init@v4
+
       - 
         name: Setup FFMPEG
         uses: FedericoCarboni/setup-ffmpeg@v1
