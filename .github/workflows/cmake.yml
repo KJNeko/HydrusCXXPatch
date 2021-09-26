@@ -77,7 +77,8 @@ jobs:
       name: Checkout
       uses: actions/checkout@v2
     
-    - name: Submodule init
+    - 
+      name: Submodule init
       uses: snickerbockers/submodules-init@v4
 
     - 
@@ -159,7 +160,8 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
 
-      - name: submodule init
+      - 
+        name: submodule init
         uses: snickerbockers/submodules-init@v4
 
       - 
