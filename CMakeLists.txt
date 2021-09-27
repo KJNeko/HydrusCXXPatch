@@ -65,7 +65,7 @@ target_include_directories(HydrusPatch PRIVATE ${SOURCE_DIR})
 target_include_directories(HydrusPatch PRIVATE ${FLG_DIR})
 
 install(CODE "file(COPY \"${CMAKE_SOURCE_DIR}/hydrusCXXPatch/PatchedClient.py\" DESTINATION \"${CMAKE_SOURCE_DIR}/patch/\")
-if(EXISTS \"hydrus\")
+if(EXISTS \"hydrus/hydrus\")
     message(\"Detected what looks to be hydrus source. Adding patch files\")
         if(WIN32)
             file(COPY \"${CMAKE_SOURCE_DIR}/patch/lib/libHydrusPatch.dll\" DESTINATION \"{$CMAKE_SOURCE_DIR}/hydrus/hydrus/lib/\")
