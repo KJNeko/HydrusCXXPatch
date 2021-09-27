@@ -38,9 +38,7 @@ jobs:
         make install
 
     - name: compress
-      run: | 
-        ls ${{github.workspace}}
-        tar -czvf Ubuntu-Patch.tar.gz -c patch
+      run: tar -czvf Ubuntu-Patch.tar.gz -c patch
 
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
@@ -131,8 +129,9 @@ jobs:
       run: |
         cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
         cmake CMakeLists.txt
-        make
-        make install
+        dir
+        make .\makefile
+        make install .\makefile
     - 
       name: Build Hydrus
       run: |
@@ -244,7 +243,6 @@ jobs:
           move hydrus\static\build_files\windows\server-win.spec server-win.spec
           pyinstaller server-win.spec
           pyinstaller client-win.spec
-          dir -r
       - 
         name: InnoSetup
         run: |
