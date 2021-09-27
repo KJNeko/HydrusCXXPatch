@@ -16,9 +16,9 @@ from numpy import ctypeslib as npct
 from sys import platform
 #windows vs linux check
 if platform == "linux" or platform == "linux2":
-    c_lib_numpy = npct.load_library("lib/libHydrusPatch.so", ".")
+    c_lib_numpy = npct.load_library("hydrus/lib/libHydrusPatch.so", ".")
 elif platform == "win32":
-    c_lib_numpy = npct.load_library("lib/libHydrusPatch.dll", ".")
+    c_lib_numpy = npct.load_library("hydrus/lib/libHydrusPatch.dll", ".")
 c_lib_numpy.getMimeCXX.restype = ctypes.c_int
 c_lib_numpy.getMimeCXX.argtypes = [ctypes.c_char_p]
 
