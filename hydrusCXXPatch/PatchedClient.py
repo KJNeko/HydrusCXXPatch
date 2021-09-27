@@ -10,22 +10,29 @@ from hydrus import hydrus_client
 
 #override section
 
-import ctypes
+from ctypes import * 
 from numpy import ctypeslib as npct
 
 from sys import platform
 #windows vs linux check
+
 if platform == "linux" or platform == "linux2":
-    c_lib_numpy = npct.load_library("hydrus/lib/libHydrusPatch.so", ".")
+    c_lib_numpy = CDLL("hydrus/lib/libHydrusPatch.so")
 elif platform == "win32":
-    c_lib_numpy = npct.load_library("hydrus/lib/libHydrusPatch.dll", ".")
-c_lib_numpy.getMimeCXX.restype = ctypes.c_int
-c_lib_numpy.getMimeCXX.argtypes = [ctypes.c_char_p]
+    c_lib_numpy = CDLL("hydrus/lib/libHydrusPatch.dll")
+
+
+#if platform == "linux" or platform == "linux2":
+#    c_lib_numpy = npct.load_library("hydrus/lib/libHydrusPatch.so", ".")
+#elif platform == "win32":
+#    c_lib_numpy = npct.load_library("hydrus/lib/libHydrusPatch.dll", ".")
+#c_lib_numpy.getMimeCXX.restype = ctypes.c_int
+#c_lib_numpy.getMimeCXX.argtypes = [ctypes.c_char_p]
 
 
 def GetMimeCXX( path, ok_to_look_for_hydrus_updates = False ):
     
-    mime = c_lib_numpy.getMimeCXX( ctypes.c_char_p(path.encode('utf-8')) )
+    mime = c_lib_numpy.getMimeCXX( c_char_p(path.encode('utf-8')) )
 
     if mime == HC.UNDETERMINED_WM:
         
