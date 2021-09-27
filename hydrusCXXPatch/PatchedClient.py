@@ -17,9 +17,9 @@ from sys import platform
 #windows vs linux check
 
 if platform == "linux" or platform == "linux2":
-    c_lib_numpy = CDLL("hydrus/lib/libHydrusPatch.so")
+    c_lib_numpy = CDLL("libHydrusPatch.so")
 elif platform == "win32":
-    c_lib_numpy = CDLL("hydrus/lib/libHydrusPatch.dll")
+    c_lib_numpy = CDLL("libHydrusPatch.dll")
 
 
 #if platform == "linux" or platform == "linux2":
