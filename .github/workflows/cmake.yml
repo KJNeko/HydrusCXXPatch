@@ -116,8 +116,8 @@ jobs:
       run: |
         cp hydrus/static/build_files/linux/client.spec client.spec
         cp hydrus/static/build_files/linux/server.spec server.spec
-        pyinstaller server.spec --debug
-        pyinstaller client.spec --debug
+        pyinstaller server.spec --debug all --upx-exclude
+        pyinstaller client.spec --debug all --upx-exclude
     - 
       name: Remove Chonk
       run: |
