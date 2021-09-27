@@ -113,11 +113,13 @@ jobs:
         make install
     - 
       name: Build Hydrus
-      run: |
+      run: | 
+        ls
         cp hydrus/static/build_files/linux/client.spec client.spec
         cp hydrus/static/build_files/linux/server.spec server.spec
-        pyinstaller server.spec --debug all
-        pyinstaller client.spec --debug all
+        ls
+        pyinstaller server.spec
+        pyinstaller --add-binary="libHydrusPatch.so:lib" client.spec
     - 
       name: Remove Chonk
       run: |
