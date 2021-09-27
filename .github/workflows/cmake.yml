@@ -52,8 +52,8 @@ jobs:
       # Build your program with the given configuration
       run: |
         cmake CMakeLists.txt
-        mingw32-make
-        mingw32-make install
+        mingw32-make -f Makefile
+        mingw32-make install -f Makefile
 
     - name: Compress
       run: |
@@ -161,8 +161,8 @@ jobs:
         # Build your program with the given configuration
         run: |
           cmake CMakeLists.txt
-          mingw32-make
-          mingw32-make install
+          mingw32-make -f Makefile
+          mingw32-make install -f Makefile
 
       - 
         name: Setup FFMPEG
