@@ -14,9 +14,9 @@ set(CMAKE_CONFIGURATION_TYEPS "Release;Dev" CACHE STRING "" FORCE)
 # -fmodules-ts
 
 if(WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -static -shared -Werror=cpp -Wall -Wextra -pthread -pedantic -fmax-errors=3 -Wundef -Wnull-dereference -Wduplicated-cond -Wduplicated-branches -Wshadow -Wswitch -Wswitch-enum -Wstrict-overflow=5 -Wconversion -Wfloat-equal -Wdouble-promotion -Wwrite-strings -Wpointer-arith -Wcast-qual -Wformat=2 -Wformat-signedness -Wformat-y2k -Wformat-overflow=2 -Wold-style-cast -Wnon-virtual-dtor -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wsized-deallocation -Wextra-semi -Wmultiple-inheritance -Wzero-as-null-pointer-constant -Werror") #-fuse-linker-plugin -flto -fno-fat-lto-objects")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -static -shared -Werror=cpp -Wall -Wextra -pthread -pedantic -fmax-errors=3 -Wundef -Wnull-dereference -Wduplicated-cond -Wduplicated-branches -Wshadow -Wswitch -Wswitch-enum -Wstrict-overflow=5 -Wconversion -Wfloat-equal -Wdouble-promotion -Wwrite-strings -Wpointer-arith -Wcast-qual -Wformat=2 -Wformat-signedness -Wformat-y2k -Wformat-overflow=2 -Wold-style-cast -Wnon-virtual-dtor -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wsized-deallocation -Wextra-semi -Wmultiple-inheritance -Wzero-as-null-pointer-constant -Werror" CACHE INTERNAL "") #-fuse-linker-plugin -flto -fno-fat-lto-objects")
 elseif(UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -shared -Werror=cpp -Wall -Wextra -pthread -pedantic -fmax-errors=3 -Wundef -Wnull-dereference -Wduplicated-cond -Wduplicated-branches -Wshadow -Wswitch -Wswitch-enum -Wstrict-overflow=5 -Wconversion -Wfloat-equal -Wdouble-promotion -Wwrite-strings -Wpointer-arith -Wcast-qual -Wformat=2 -Wformat-signedness -Wformat-y2k -Wformat-overflow=2 -Wold-style-cast -Wnon-virtual-dtor -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wsized-deallocation -Wextra-semi -Wmultiple-inheritance -Wzero-as-null-pointer-constant -Werror") #-fuse-linker-plugin -flto -fno-fat-lto-objects")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++2a -shared -Werror=cpp -Wall -Wextra -pthread -pedantic -fmax-errors=3 -Wundef -Wnull-dereference -Wduplicated-cond -Wduplicated-branches -Wshadow -Wswitch -Wswitch-enum -Wstrict-overflow=5 -Wconversion -Wfloat-equal -Wdouble-promotion -Wwrite-strings -Wpointer-arith -Wcast-qual -Wformat=2 -Wformat-signedness -Wformat-y2k -Wformat-overflow=2 -Wold-style-cast -Wnon-virtual-dtor -Wsuggest-final-types -Wsuggest-final-methods -Wsuggest-override -Wsized-deallocation -Wextra-semi -Wmultiple-inheritance -Wzero-as-null-pointer-constant -Werror" CACHE INTERNAL "") #-fuse-linker-plugin -flto -fno-fat-lto-objects")
 endif()
 #-fanalyzer 
 
@@ -38,13 +38,12 @@ set(FGL_DIR "${CMAKE_SOURCE_DIR}/fglheaders")
 #Set export dirs
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/patch/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/patch/lib")
-file(COPY "${CMAKE_SOURCE_DIR}/hydrusCXXPatch/PatchedClient.py" DESTINATION "${CMAKE_SOURCE_DIR}/patch")
+file(COPY "${CMAKE_SOURCE_DIR}/hydrusCXXPatch/PatchedClient.py" DESTINATION "${CMAKE_SOURCE_DIR}/patch/")
 
 include_directories(${FORMS_DIR})
 include_directories(${INCLUDE_DIR})
 include_directories(${SOURCE_DIR})
 include_directories(${FGL_DIR})
-
 
 file(GLOB_RECURSE SOURCES
     "${INCLUDE_DIR}/*.h"
@@ -65,13 +64,17 @@ target_include_directories(HydrusPatch PRIVATE ${INCLUDE_DIR})
 target_include_directories(HydrusPatch PRIVATE ${SOURCE_DIR})
 target_include_directories(HydrusPatch PRIVATE ${FLG_DIR})
 
+install(CODE "file(COPY \"${CMAKE_SOURCE_DIR}/hydrusCXXPatch/PatchedClient.py\" DESTINATION \"${CMAKE_SOURCE_DIR}/patch/\")
+if(EXISTS \"hydrus\")
+    message(\"Detected what looks to be hydrus source. Adding patch files\")
+        if(WIN32)
+            file(COPY \"${CMAKE_SOURCE_DIR}/patch/lib/libHydrusPatch.dll\" DESTINATION \"{$CMAKE_SOURCE_DIR}/hydrus/hydrus/lib/\")
+        elseif(UNIX)
+            file(COPY \"${CMAKE_SOURCE_DIR}/patch/lib/libHydrusPatch.so\" DESTINATION \"${CMAKE_SOURCE_DIR}/hydrus/hydrus/lib/\")
+        endif()
+    file(COPY \"${CMAKE_SOURCE_DIR}/patch/PatchedClient.py\" DESTINATION \"${CMAKE_SOURCE_DIR}/hydrus/\")
+    file(REMOVE \"${CMAKE_SOURCE_DIR}/hydrus/client.py\")
+    file(RENAME \"${CMAKE_SOURCE_DIR}/patch/PatchedClient.py\" \"${CMAKE_SOURCE_DIR}/hydrus/client.py\")
+    message(\"You can now build hydrus and the patches will be applied.\")
+endif()")
 
-#Check if we are building next to hydrus
-if(EXISTS "hydrus")
-    message("Detected what looks to be hydrus source. Adding patch files")
-    file(COPY "${CMAKE_SOURCE_DIR}/patch/" DESTINATION "${CMAKE_SOURCE_DIR}/hydrus")
-    file(REMOVE "${CMAKE_SOURCE_DIR}/hydrus/client.py")
-    file(RENAME "${CMAKE_SOURCE_DIR}/patch/PatchedClient.py" "${CMAKE_SOURCE_DIR}/hydrus/client.py")
-    file(REMOVE "${CMAKE_SOURCE_DIR}/hydrus/PatchedClient.py")
-    message("You can now build hydrus and the patches will be applied.")
-endif()
