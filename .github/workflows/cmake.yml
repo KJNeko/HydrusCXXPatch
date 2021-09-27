@@ -29,7 +29,11 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: |
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake CMakeLists.txt
+        make
+        make install
 
     - name: compress
       run: | 
@@ -44,7 +48,7 @@ jobs:
       
 
   build-windows:
-    runs-on: [windows-latest]
+    runs-on: windows-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -58,6 +62,9 @@ jobs:
       # Build your program with the given configuration
       run: |
         cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
+        cmake CMakeLists.txt
+        make
+        make install
 
     - name: Compress
       run: |
@@ -70,8 +77,7 @@ jobs:
         path: ${{github.workspace}}\Windows-Patch.zip
 
   hydrus-build-ubuntu:
-    runs-on: ubuntu-18.04
-    needs: [build-ubuntu]
+    runs-on: ubuntu-latest
     steps:
     -
       name: Checkout
@@ -113,13 +119,18 @@ jobs:
         packages: pyinstaller
         requirements: hydrus/static/build_files/linux/requirements.txt
 
-    - name: Get Patch Artifacts
-      uses: actions/download-artifact@v2
+    - name: Configure CMake
+      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      run: cmake -B ${{github.workspace}}\build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
-    - name: Patch Files
+    - name: Build
+      # Build your program with the given configuration
       run: |
-        tar -xf Ubuntu-Patch.tar.gz ./patch
-        ls patch
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake CMakeLists.txt
+        make
+        make install
     - 
       name: Build Hydrus
       run: |
@@ -154,7 +165,6 @@ jobs:
 
   hydrus-build-windows:
     runs-on: [windows-latest]
-    needs: [build-windows]
     steps:
       - 
         name: Checkout
@@ -163,6 +173,19 @@ jobs:
       - 
         name: submodule init
         uses: snickerbockers/submodules-init@v4
+
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}\build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G "MinGW Makefiles"
+
+      - name: Build
+        # Build your program with the given configuration
+        run: |
+          cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+          cmake CMakeLists.txt
+          make
+          make install
 
       - 
         name: Setup FFMPEG
@@ -202,7 +225,7 @@ jobs:
         uses: carlosperate/download-file-action@v1.0.3
         id: download_mpv
         with:
-            file-url: 'https://sourceforge.net/projects/mpv-player-windows/files/libmpv/mpv-dev-x86_64-20210228-git-d1be8bb.7z'
+            file-url: 'https://sourceforge.net/projects/mpv-player-windows/files/libmpv/mpv-dev-x86_64-20210919-git-560e6c8.7z'
             file-name: 'mpv-dev-x86_64.7z'
             location: '.'
       - 
@@ -210,14 +233,6 @@ jobs:
         run: |
           7z x ${{ steps.download_mpv.outputs.file-path }}
           move mpv-1.dll hydrus\
-      
-      - name: Get Patch Artifacts
-        uses: actions/download-artifact@v2
-
-      - name: Patch Files
-        run: |
-          7z e Windows-Patch/Windows-Patch.zip ./patch
-          ls patch      
           
       - name: Build Hydrus
         run: |
@@ -277,10 +292,10 @@ jobs:
     - name: Rename Files
       run: |
         mv Windows-Patch/Windows-Patch.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Source.-.Patch.zip
-        mv Windows-Patch/Hydrus-Windows.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Extract.zip
+        mv Hydrus-Windows/Hydrus-Windows.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Executable.zip
         mv Windows-Install/HydrusInstaller.exe Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Installer.exe
         mv Ubuntu-Patch/Ubuntu-Patch.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Source.-.Patch.tar.gz
-        mv Ubuntu-Patch/Hydrus-Ubuntu.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Executable.tar.gz
+        mv Ubuntu-Extract/Ubuntu-Extract.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Executable.tar.gz
         
 
     - name: Release new
