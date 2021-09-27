@@ -32,10 +32,10 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: |
-        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
         cmake CMakeLists.txt
-        make
-        make install
+        make .\makefile
+        make install .\makefile
+
 
     - name: compress
       run: tar -czvf Ubuntu-Patch.tar.gz -c patch
@@ -53,18 +53,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}\build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G "MinGW Makefiles"
-
     - name: Build
       # Build your program with the given configuration
       run: |
-        cmake --build ${{github.workspace}}\build --config ${{env.BUILD_TYPE}}
         cmake CMakeLists.txt
-        make
-        make install
+        make .\makefile
+        make install .\makefile
+
 
     - name: Compress
       run: |
@@ -119,17 +114,10 @@ jobs:
         packages: pyinstaller
         requirements: hydrus/static/build_files/linux/requirements.txt
 
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}\build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
     - name: Build
       # Build your program with the given configuration
       run: |
-        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
         cmake CMakeLists.txt
-        dir
         make .\makefile
         make install .\makefile
     - 
@@ -175,18 +163,12 @@ jobs:
         name: submodule init
         uses: snickerbockers/submodules-init@v4
 
-      - name: Configure CMake
-        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake -B ${{github.workspace}}\build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G "MinGW Makefiles"
-
       - name: Build
         # Build your program with the given configuration
         run: |
-          cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
           cmake CMakeLists.txt
-          make
-          make install
+          make .\makefile
+          make install .\makefile
 
       - 
         name: Setup FFMPEG
