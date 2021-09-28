@@ -1,9 +1,9 @@
 name: Release
 
 on: [push]
-  #push:
-  #  tags:
-  #    - 'v*'
+  push:
+    tags:
+      - 'v*'
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
