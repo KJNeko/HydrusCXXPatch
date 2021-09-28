@@ -66,7 +66,8 @@ install(CODE "if(EXISTS \"hydrus/hydrus\")
         endif()
     file(COPY \"${CMAKE_SOURCE_DIR}/patch/PatchedClient.py\" DESTINATION \"${CMAKE_SOURCE_DIR}/hydrus/\")
     file(REMOVE \"${CMAKE_SOURCE_DIR}/hydrus/client.py\")
-    file(RENAME \"${CMAKE_SOURCE_DIR}/patch/PatchedClient.py\" \"${CMAKE_SOURCE_DIR}/hydrus/client.py\")
     message(\"You can now build hydrus and the patches will be applied.\")
 endif()")
+
+#    file(RENAME \"${CMAKE_SOURCE_DIR}/patch/PatchedClient.py\" \"${CMAKE_SOURCE_DIR}/hydrus/client.py\")
 
