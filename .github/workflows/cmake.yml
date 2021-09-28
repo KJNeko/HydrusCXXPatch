@@ -62,89 +62,6 @@ jobs:
         name: Windows-Patch
         path: ${{github.workspace}}\Windows-Patch.zip
 
-  hydrus-build-ubuntu:
-    runs-on: ubuntu-latest
-    steps:
-    -
-      name: Checkout
-      uses: actions/checkout@v2
-    
-    - 
-      name: Submodule init
-      uses: snickerbockers/submodules-init@v4
-
-    - 
-      name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-        architecture: x64
-    #- name: Cache Qt
-    #  id: cache-qt
-    #  uses: actions/cache@v1
-    #  with:
-    #    path: Qt
-    #    key: ${{ runner.os }}-QtCache
-    #- 
-    #  name: Install Qt
-    #  uses: jurplel/install-qt-action@v2
-    #  with:
-    #    install-deps: true
-    #    setup-python: 'false'
-    #    modules: qtcharts qtwidgets qtgui qtcore
-    #    cached: ${{ steps.cache-qt.outputs.cache-hit }}
-    - 
-      name: APT Install
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libmpv1
-    - 
-      name: Pip Installer
-      uses: BSFishy/pip-action@v1
-      with:
-        packages: pyinstaller
-        requirements: hydrus/static/build_files/linux/requirements.txt
-
-    - name: Build
-      # Build your program with the given configuration
-      run: |
-        cmake CMakeLists.txt
-        make
-        make install
-    - 
-      name: Build Hydrus
-      run: | 
-        ls
-        cp hydrus/static/build_files/linux/client.spec client.spec
-        cp hydrus/static/build_files/linux/server.spec server.spec
-        ls
-        pyinstaller server.spec
-        pyinstaller --add-binary="libHydrusPatch.so:lib" client.spec
-    - 
-      name: Remove Chonk
-      run: |
-          find dist/client/ -type f -name "*.pyc" -delete
-          while read line; do find dist/client/ -type f -name "${line}" -delete ; done < hydrus/static/build_files/linux/files_to_delete.txt
-    -
-      name: Set Permissions
-      run: |
-          sudo chown --recursive 1000:1000 dist/client
-          sudo find dist/client -type d -exec chmod 0755 {} \;
-          sudo chmod +x dist/client/client dist/client/server dist/client/bin/swfrender_linux
-    -
-      name: Compress Client
-      run: |
-          mv dist/client "dist/Hydrus Network"
-          tar -czvf Ubuntu-Extract.tar.gz -C dist "Hydrus Network"
-    - 
-      name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: Ubuntu-Extract
-        path: Ubuntu-Extract.tar.gz
-        if-no-files-found: error
-        retention-days: 2
-
   hydrus-build-windows:
     runs-on: [windows-latest]
     steps:
@@ -249,7 +166,7 @@ jobs:
   create-release:
     name: Create release Entry
     runs-on: ubuntu-latest
-    needs: [build-windows, build-ubuntu, hydrus-build-windows, hydrus-build-ubuntu]
+    needs: [build-windows, build-ubuntu, hydrus-build-windows]
     
     steps:
     - name: Checkout Code
@@ -270,7 +187,6 @@ jobs:
         mv Hydrus-Windows/Hydrus-Windows.zip Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Executable.zip
         mv Windows-Install/HydrusInstaller.exe Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Installer.exe
         mv Ubuntu-Patch/Ubuntu-Patch.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Source.-.Patch.tar.gz
-        mv Ubuntu-Extract/Ubuntu-Extract.tar.gz Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Executable.tar.gz
         
 
     - name: Release new
@@ -282,7 +198,6 @@ jobs:
           Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Executable.zip
           Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Windows.-.Installer.exe
           Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Source.-.Patch.tar.gz
-          Hydrus.Patch.${{ steps.meta.outputs.version_short }}.-.Linux.-.Executable.tar.gz
 
 
     env:
