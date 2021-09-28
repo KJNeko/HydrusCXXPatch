@@ -28,5 +28,9 @@ The patch will be expected to work on any system and follow my specification for
   2. GCC Compiler
   3. Make
   4. Python
- 
- Run cmake from the root directory and move the contents of *patch* into the hydrus root directory next to client.py
+
+##### Source:
+ Run cmake from the root directory and move the contents of *patch* into the hydrus root directory next to client.py. Run PatchedClient.py through python
+
+##### Binary (Windows only due to pyinstaller issues with linux and cbindings)
+ Same as source but rename PatchedClient.py to client.py and build with pyinstaller (Follow the hydrus guide for this, I recomend running from source though)
