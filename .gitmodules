@@ -1,3 +1,6 @@
 [submodule "hydrus"]
 	path = hydrus
 	url = https://github.com/hydrusnetwork/hydrus
+[submodule "MrMime"]
+	path = MrMime
+	url = https://github.com/alaestor/MrMime
