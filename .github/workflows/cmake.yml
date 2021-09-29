@@ -61,7 +61,7 @@ jobs:
     - name: Build
       # Build your program with the given configuration
       run: |
-        choco install mingw
+        choco install mingw --force
         cmake CMakeLists.txt -G "MinGW Makefiles"
         mingw32-make -f Makefile
 
@@ -89,7 +89,7 @@ jobs:
       - name: Build
         # Build your program with the given configuration
         run: |
-          choco install mingw
+          choco install mingw --force
           cmake CMakeLists.txt -G "MinGW Makefiles"
           mingw32-make -f Makefile
           mingw32-make install -f Makefile
