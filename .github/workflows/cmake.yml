@@ -28,6 +28,7 @@ jobs:
     - name: apt update
       run: |
         sudo apt-get update
+        sudo apt install -y gcc-11
         
     - name: Build
       # Build your program with the given configuration
@@ -54,9 +55,6 @@ jobs:
     - 
       name: submodule init
       uses: snickerbockers/submodules-init@v4
-
-    - name: select gcc
-      run : echo "CC=gcc-11" >> $GITHUB_ENV
 
     - name: Build
       # Build your program with the given configuration
