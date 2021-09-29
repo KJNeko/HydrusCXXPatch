@@ -27,7 +27,7 @@ jobs:
 
     - name: apt update
       run: |
-        apt update -y
+        sudo apt-get update
         
     - name: Build
       # Build your program with the given configuration
