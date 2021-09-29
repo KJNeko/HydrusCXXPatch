@@ -11,7 +11,6 @@ from hydrus import hydrus_client
 #override section
 
 from ctypes import * 
-from numpy import ctypeslib as npct
 
 from sys import platform
 #windows vs linux check
@@ -34,16 +33,17 @@ def GetMimeCXX( path, ok_to_look_for_hydrus_updates = False ):
     
     mime = c_lib_numpy.getMimeCXX( c_char_p(path.encode('utf-8')) )
 
-    if mime == HC.UNDETERMINED_WM:
-        
-        if HydrusVideoHandling.HasVideoStream( path ):
+    if mime != HC.APPLICATION_UNKNOWN:
+        if mime == HC.UNDETERMINED_WM:
             
-            return HC.VIDEO_WMV
+            if HydrusVideoHandling.HasVideoStream( path ):
+                
+                return HC.VIDEO_WMV
+                
             
-        
-        # we'll catch and verify wma later            
-    else:
-        return mime
+            # we'll catch and verify wma later            
+        else:
+            return mime
 
     print("We didn't find it on our end", mime)
 
