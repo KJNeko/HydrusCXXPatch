@@ -28,6 +28,9 @@ jobs:
         make
         make install
 
+    - 
+      name: submodule init
+      uses: snickerbockers/submodules-init@v4
 
     - name: compress
       run: tar -czvf Ubuntu-Patch.tar.gz -c patch
@@ -44,6 +47,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - 
+      name: submodule init
+      uses: snickerbockers/submodules-init@v4
 
     - name: Build
       # Build your program with the given configuration
